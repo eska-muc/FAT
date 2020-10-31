@@ -347,11 +347,12 @@ FRESULT DeleteFile(const TCHAR * path)
 
 FRESULT Open(FILE * pfile, const TCHAR * path, BYTE mode)
 {
+	FRESULT fr;
+	BYTE rc;
+	
 	if (pfile->fstyp == FS_FAT)
 		return f_open(&pfile->fil, path, mode);
 	
-	BYTE rc;
-	FRESULT fr;
 	
 	fr = MakeFCB(path, &pfile->fcb);
 	
@@ -381,10 +382,10 @@ FRESULT Open(FILE * pfile, const TCHAR * path, BYTE mode)
 
 FRESULT Close(FILE * pfile)
 {
+	BYTE rc;
+	
 	if (pfile->fstyp == FS_FAT)
 		f_close(&pfile->fil);
-
-	BYTE rc;
 	
 	rc = BDOS_CLOSEFILE((WORD)pfile->fcb);
 	
@@ -398,13 +399,13 @@ FRESULT Close(FILE * pfile)
 
 FRESULT Read(FILE * pfile, void * pbuf, UINT btr, UINT * br)
 {
+	BYTE rc;
+
 	if (btr != RECLEN)
 		return FR_INVALID_PARAMETER;
 	
 	if (pfile->fstyp == FS_FAT)
 		return f_read(&pfile->fil, pbuf, RECLEN, br);
-
-	BYTE rc;
 
 	BDOS_SETDMA((WORD)pbuf);
 	
@@ -423,14 +424,14 @@ FRESULT Read(FILE * pfile, void * pbuf, UINT btr, UINT * br)
 
 FRESULT Write(FILE * pfile, void * pbuf, UINT btw, UINT * bw)
 {
+	BYTE rc;
+
 	if (btw != RECLEN)
 		return FR_INVALID_PARAMETER;
 	
 	if (pfile->fstyp == FS_FAT)
 		return f_write(&pfile->fil, pbuf, RECLEN, bw);
-
-	BYTE rc;
-
+	
 	BDOS_SETDMA((WORD)pbuf);
 	
 	rc = BDOS_WRITESEQ((WORD)&pfile->fcb);

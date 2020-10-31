@@ -169,12 +169,12 @@ DRESULT disk_ioctl (
 	void *buff		/* Buffer to send/receive control data */
 )
 {
+	REGS reg;
 	pdrv;
 	cmd;
-	buff;
-	REGS reg;
+	buff;	
 	
-	//printf("\ndisk_ioctl(%uc, %uc)", pdrv, cmd);
+	printf("\ndisk_ioctl(%uc, %uc)", pdrv, cmd);
 
 	switch (cmd)
 	{
