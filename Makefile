@@ -17,11 +17,16 @@ SDCC_OPTS=-c -mz80 --opt-code-size
 %.rel: %.c
 	sdcc ${SDCC_OPTS} $<
 
-fat.com: fat.hex
-	${TOOLS}/Linux/zx ${ZXBINDIR}MLOAD25.COM fat.hex
-
-fat.hex: fat.ihx
+%.hex: %.ihx
 	mv $< $@
+
+%.com: %.hex
+	${TOOLS}/Linux/zx ${ZXBINDIR}MLOAD25.COM $<
+
+all: fat.com fatiotst.com
+
+fatiotst.ihx: ucrt0.rel chario.rel bios.rel bdos.rel diskio.rel fatiotst.rel
+	sdldz80 -mjxi -b _CODE=0x0100 -k ${SDCC_LIB}/z80 -l z80 fatiotst $+
 
 fat.ihx: ucrt0.rel chario.rel bios.rel bdos.rel ff.rel diskio.rel fat.rel
 	sdldz80 -mjxi -b _CODE=0x0100 -k ${SDCC_LIB}/z80 -l z80 fat $+
